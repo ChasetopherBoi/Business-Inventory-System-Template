@@ -8,11 +8,18 @@ from datetime import datetime
 
 
 def create_user(db: Session, user_in: UserCreate) -> User:
+    existing = db.query(User).filter(User.email == user_in.email).first()
+    if existing and existing.is_deleted:
+        raise HTTPException(409, "Account is deactivated. Contact support.")
+    if existing:
+        raise HTTPException(409, "Email already exists.")
+
     user = User(
         email=user_in.email,
         full_name=user_in.full_name,
         hashed_password=hash_password(user_in.password),
     )
+
     db.add(user)
     try:
         db.commit()

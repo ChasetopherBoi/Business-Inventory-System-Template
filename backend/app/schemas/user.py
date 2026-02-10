@@ -14,3 +14,7 @@ class UserRead(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class UserMe(UserRead):
+    role: str
