@@ -3,9 +3,8 @@ from sqlalchemy.orm import Session
 from app.api.deps_auth import get_current_user
 from app.models.user import User
 from app.db.deps import get_db
-from app.schemas.user import UserCreate, UserRead
+from app.schemas.user import UserCreate, UserRead, UserMe
 from app.services.user_service import create_user, get_users, delete_user
-from app.schemas.user import UserMe
 from app.api.deps_roles import require_role
 
 
@@ -17,7 +16,7 @@ def create_user_endpoint(user_in: UserCreate, db: Session = Depends(get_db)):
     return create_user(db, user_in)
 
 
-@router.get("/me", response_model=UserRead)
+@router.get("/me", response_model=UserMe)
 def read_me(current_user: User = Depends(get_current_user)):
     return current_user
 
