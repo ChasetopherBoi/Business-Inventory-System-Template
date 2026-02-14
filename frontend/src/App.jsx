@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import NavBar from "./components/NavBar.jsx";
+import RegisterPage from "./pages/Register.jsx";
+import LoginPage from "./pages/Login.jsx";
+import AdminInventoryPage from "./pages/AdminInventory.jsx";
+import ShopPage from "./pages/Shop.jsx";
+import CartPage from "./pages/Cart.jsx";
+import OrdersPage from "./pages/Orders.jsx";
+import AdminOrdersPage from "./pages/AdminOrders.jsx";
+import { CartProvider } from "./context/CartContext.jsx";
 
 function getToken() {
   return localStorage.getItem("access_token");
@@ -18,123 +26,6 @@ async function apiGetMe(token) {
   });
   if (!res.ok) throw new Error("Failed to fetch /me");
   return res.json();
-}
-
-async function apiLogin(email, password) {
-  const body = new URLSearchParams();
-  body.set("username", email);
-  body.set("password", password);
-
-  const res = await fetch("/api/v1/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body,
-  });
-
-  if (!res.ok) throw new Error("Login failed");
-  return res.json();
-}
-
-function PageShell({ children }) {
-  return <div className="container py-4">{children}</div>;
-}
-
-function Home() {
-  return (
-    <PageShell>
-      <h1 className="h3">Dashboard</h1>
-      <p className="text-muted mb-0">Welcome. Use the navigation above.</p>
-    </PageShell>
-  );
-}
-
-function Shop() {
-  return (
-    <PageShell>
-      <h1 className="h3">Shop</h1>
-      <p className="text-muted">This will be the non-admin view.</p>
-    </PageShell>
-  );
-}
-
-function Admin() {
-  return (
-    <PageShell>
-      <h1 className="h3">Admin Panel</h1>
-      <p className="text-muted">Inventory management will go here next.</p>
-    </PageShell>
-  );
-}
-
-function Login({ onLogin, error }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  return (
-    <div
-      style={{
-        margin: "auto",
-        width: "100vw",
-        height: "100dvh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <PageShell>
-        <div className="h3 mb-3" style={{ margin: "auto", maxWidth: 420 }}>
-          Login
-        </div>
-
-        <form
-          className="card p-3"
-          style={{ maxWidth: 420, margin: "auto" }}
-          onSubmit={(e) => onLogin(e, email, password)}
-        >
-          <label className="form-label">Email</label>
-          <input
-            className="form-control mb-3"
-            placeholder={"user@example.com"}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          <label className="form-label">Password</label>
-          <input
-            className="form-control mb-3"
-            type="password"
-            placeholder={"********"}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <button className="btn btn-primary" type="submit">
-            Log in
-          </button>
-
-          {error ? <div className="text-danger mt-3">{error}</div> : null}
-        </form>
-      </PageShell>
-    </div>
-  );
-}
-
-function Register() {
-  return (
-    <PageShell>
-      <h1 className="h3">Create account</h1>
-      <p className="text-muted">We’ll wire this to POST /users soon.</p>
-    </PageShell>
-  );
-}
-
-function RequireAuth({ me, children }) {
-  if (!me) return <Navigate to="/login" replace />;
-  return children;
-}
-
-function RequireAdmin({ me, children }) {
-  if (!me) return <Navigate to="/login" replace />;
-  if (me.role !== "admin") return <Navigate to="/shop" replace />;
-  return children;
 }
 
 function FullPageSpinner() {
@@ -166,6 +57,95 @@ function FullPageSpinner() {
       `}</style>
     </div>
   );
+}
+
+async function apiLogin(email, password) {
+  const body = new URLSearchParams();
+  body.set("username", email);
+  body.set("password", password);
+
+  const res = await fetch("/api/v1/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+  });
+
+  if (!res.ok) throw new Error("Login failed");
+  return res.json();
+}
+
+function PageShell({ children }) {
+  return <div className="container py-4">{children}</div>;
+}
+
+function Home() {
+  return (
+    <PageShell>
+      <h1 className="h3">Dashboard</h1>
+      <p className="text-muted mb-0">Welcome. Use the navigation above.</p>
+    </PageShell>
+  );
+}
+
+function formatFastApiError(data) {
+  const detail = data?.detail;
+
+  const renameField = (field) => {
+    if (field === "full_name") return "Name";
+    if (field === "email") return "Email";
+    if (field === "password") return "Password";
+    if (field === "role") return "Role";
+    return field;
+  };
+
+  const cleanMsg = (msg) => {
+    if (msg === "Field required") return "is required";
+    return msg;
+  };
+
+  if (Array.isArray(detail)) {
+    return detail
+      .map((e) => {
+        const loc = Array.isArray(e.loc) ? e.loc : [];
+        const field = loc[loc.length - 1] || "field";
+        return `${renameField(field)} ${cleanMsg(e.msg)}`;
+      })
+      .join("\n");
+  }
+
+  if (typeof detail === "string") return detail;
+  if (typeof data?.message === "string") return data.message;
+
+  return "Registration failed";
+}
+
+async function apiRegister(name, email, password) {
+  const res = await fetch("/api/v1/users/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ full_name: name, email, password }),
+  });
+
+  if (!res.ok) {
+    let msg = "Registration failed";
+    const data = await res.json();
+    msg = formatFastApiError(data);
+
+    throw new Error(msg);
+  }
+
+  return res.json();
+}
+
+function RequireAuth({ me, children }) {
+  if (!me) return <Navigate to="/login" replace />;
+  return children;
+}
+
+function RequireAdmin({ me, children }) {
+  if (!me) return <Navigate to="/login" replace />;
+  if (me.role !== "admin") return <Navigate to="/shop" replace />;
+  return children;
 }
 
 export default function App() {
@@ -205,18 +185,15 @@ export default function App() {
       setToken(data.access_token);
       setTokenState(data.access_token);
 
-      // Immediately load /me using the fresh token
       const user = await apiGetMe(data.access_token);
       setMe(user);
 
-      // Route based on role
       if (user.role === "admin") navigate("/admin");
       else navigate("/shop");
     } catch {
       setError("Invalid email or password");
     }
   }
-
 
   function onLogout() {
     clearToken();
@@ -228,34 +205,61 @@ export default function App() {
   if (!authChecked) return <FullPageSpinner />;
 
   return (
-    <>
+    <CartProvider me={me}>
       <NavBar me={me} onLogout={onLogout} />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login onLogin={onLogin} error={error} />} />
-        <Route path="/register" element={<Register />} />
+      <div className="app-container">
+        <Routes>
+          <Route path="/" element={<Home />} />
 
-        <Route
-          path="/shop"
-          element={
-            <RequireAuth me={me}>
-              <Shop />
-            </RequireAuth>
-          }
-        />
+          <Route path="/login" element={<LoginPage onLogin={onLogin} error={error} />} />
+          <Route path="/register" element={<RegisterPage onRegister={apiRegister} />} />
 
-        <Route
-          path="/admin"
-          element={
-            <RequireAdmin me={me}>
-              <Admin />
-            </RequireAdmin>
-          }
-        />
+          <Route
+            path="/shop"
+            element={
+              <RequireAuth me={me}>
+                <ShopPage me={me} />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/cart"
+            element={
+              <RequireAuth me={me}>
+                <CartPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <RequireAuth me={me}>
+                <OrdersPage />
+              </RequireAuth>
+            }
+          />
 
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </>
+          <Route
+            path="/admin"
+            element={
+              <RequireAdmin me={me}>
+                <AdminInventoryPage />
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="/admin/orders"
+            element={
+              <RequireAdmin me={me}>
+                <AdminOrdersPage />
+              </RequireAdmin>
+            }
+          />
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
+    </CartProvider>
   );
 }

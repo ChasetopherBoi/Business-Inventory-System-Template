@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from app.api.v1 import admin
+
 
 from app.db.deps import get_db
 from app.schemas.auth import Token
@@ -8,6 +10,8 @@ from app.core.jwt import create_access_token
 from app.services.auth_service import authenticate_user
 
 router = APIRouter()
+
+router.include_router(admin.router, prefix="/admin", tags=["admin"])
 
 
 @router.post("/login", response_model=Token)

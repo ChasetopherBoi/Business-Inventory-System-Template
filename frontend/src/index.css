@@ -1,79 +1,198 @@
+/* ------------------------------
+   Base Layout
+------------------------------ */
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-#root {
-  min-height: 100%;
-  width: 100%;
-}
-
-html,
-body {
-  height: 100%;
-  margin: 0;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+  --bg-page: #f4f6f8;
+  --bg-navbar: #1f2933;
+  --bg-dropdown: #2f3a44;
+  --text-primary: #e4e7eb;
+  --text-muted: #9aa5b1;
+  --accent: #4dabf7;
+  --accent-hover: #339af0;
+  --danger: #dc3545;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  background: var(--bg-page);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: #243b53;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Constrain readable width */
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* ------------------------------
+   Navbar
+------------------------------ */
+
+.app-navbar {
+  background: var(--bg-navbar);
+  color: var(--text-primary);
+  padding: 10px 20px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+/* Brand */
+.app-navbar .navbar-brand {
+  color: white;
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+
+.app-navbar .navbar-brand:hover {
+  color: var(--accent);
+}
+
+/* NAV LINKS */
+.app-navbar .nav-link {
+  color: var(--text-primary);
+  padding: 10px 14px;
+  border-bottom: 3px solid transparent;
+  transition: color .2s ease, border-color .2s ease;
+}
+
+/* hover underline */
+.app-navbar .nav-link:hover {
+  color: var(--accent);
+  border-bottom: 3px solid rgba(77, 171, 247, .45);
+}
+
+/* ACTIVE PAGE underline (router will add .active) */
+.app-navbar .nav-link.active {
+  border-bottom: 3px solid var(--accent);
+  color: white;
+}
+
+.app-navbar .nav-link:hover {
+  color: var(--accent);
+}
+
+/* ------------------------------
+   Dropdowns (NO gaps!)
+------------------------------ */
+
+/* FLUSH NAVBAR DROPDOWN */
+.dropdown-menu {
+  background: var(--bg-navbar);
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  padding: 6px 0;
+  box-shadow: none;
+  border-top: 1px solid #3e4c59;
+}
+
+.dropdown-item {
+  color: var(--text-primary);
+  padding: 8px 16px;
+}
+
+.dropdown-item:hover {
+  background: var(--accent);
+  color: white;
+}
+
+/* Hover open */
+.dropdown:hover>.dropdown-menu {
+  display: block;
+}
+
+/* Nested submenu */
+.dropend {
+  position: relative;
+}
+
+.dropend .dropdown-menu {
+  left: 100%;
+  top: -6px;
+  border-left: 1px solid #3e4c59;
+}
+
+.dropend:hover>.dropdown-menu {
+  display: block;
+}
+
+/* ------------------------------
+   Buttons
+------------------------------ */
+
+.btn-outline-light {
+  border-color: #9aa5b1;
+  color: #d9e2ec;
+}
+
+.btn-outline-light:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn-danger:hover {
+  background: #b02a37;
+}
+
+/* ------------------------------
+   Cards / Content Polish
+------------------------------ */
+
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .08);
+}
+
+.card-header {
+  background: white;
+  border-bottom: 1px solid #e4e7eb;
+  font-weight: 600;
+}
+
+.card-body {
+  background: white;
+}
+
+/* ------------------------------
+   Mobile Adjustments
+------------------------------ */
+
+@media (max-width: 768px) {
+  .app-container {
+    padding: 16px;
   }
-  a:hover {
-    color: #747bff;
+
+  .navbar .nav-link {
+    margin-right: 0;
   }
-  button {
-    background-color: #f9f9f9;
+}
+
+/* DESKTOP hover */
+@media (min-width: 992px) {
+  .dropdown:hover>.dropdown-menu {
+    display: block;
   }
+}
+
+/* ACTIVE NAV TAB (persistent underline) */
+.app-navbar .nav-link.active {
+  color: #ffffff;
+  border-bottom: 3px solid var(--accent);
+}
+
+/* prevent hover from overriding active */
+.app-navbar .nav-link.active:hover {
+  border-bottom: 3px solid var(--accent);
+  color: #ffffff;
+}
+
+/* Active category inside dropdown */
+.dropdown-item.active {
+  color: white;
+  background: rgba(77, 171, 247, .18);
+  border-left: 3px solid var(--accent);
 }
