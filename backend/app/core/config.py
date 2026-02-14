@@ -1,5 +1,7 @@
 import os
 
-SECRET_KEY = os.getenv("SECRET_KEY", "dev-only-change-me")
+SECRET_KEY = os.getenv(
+    "SECRET_KEY", "a9f3c4e6b9e8c7d6f1a2234b56789abcdeffedcba1234567890abcdef1234567"
+)
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
