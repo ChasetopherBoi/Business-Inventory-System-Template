@@ -1,23 +1,15 @@
 fastapi
 uvicorn[standard]
 
-# Database
 SQLAlchemy
 psycopg2-binary
 
-# Auth / Security
 python-jose[cryptography]
 passlib[bcrypt]
-
-# Needed for form login (OAuth2PasswordRequestForm)
 python-multipart
-
-# If you used EmailStr anywhere
 email-validator
 
-# Migrations (if you used Alembic)
 alembic
 
-# File/image handling (your item image uploads)
 aiofiles
 Pillow
