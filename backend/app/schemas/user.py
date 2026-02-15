@@ -5,7 +5,7 @@ class UserCreate(BaseModel):
     full_name: str
     email: str
     password: str
-    role: str
+    role: str = "shop"
 
     @classmethod
     def password_max_len(cls, v: str) -> str:
