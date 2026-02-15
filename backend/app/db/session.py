@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./app.db")
 
-# Render Postgres URLs often start with postgres:// (SQLAlchemy wants postgresql://)
+# Render Postgres often gives postgres://..., SQLAlchemy wants postgresql://...
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
