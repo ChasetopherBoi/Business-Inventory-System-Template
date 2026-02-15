@@ -126,15 +126,16 @@ async function apiRegister(name, email, password) {
     body: JSON.stringify({ full_name: name, email, password }),
   });
 
-  if (!res.ok) {
-    let msg = "Registration failed";
-    const data = await res.json();
-    msg = formatFastApiError(data);
+  const text = await res.text();
+  let data = null;
+  try { data = JSON.parse(text); } catch { /* not json */ }
 
-    throw new Error(msg);
+  if (!res.ok) {
+    console.error("HTTP", res.status, text);
+    throw new Error((data && (data.detail || data.message)) || text || `HTTP ${res.status}`);
   }
 
-  return res.json();
+  return data;
 }
 
 function RequireAuth({ me, children }) {

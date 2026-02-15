@@ -2,9 +2,16 @@ from pydantic import BaseModel, EmailStr, Field
 
 
 class UserCreate(BaseModel):
-    email: EmailStr
     full_name: str
-    password: str = Field(min_length=8, max_length=72)
+    email: str
+    password: str
+    role: str
+
+    @classmethod
+    def password_max_len(cls, v: str) -> str:
+        if len(v.encode("utf-8")) > 72:
+            raise ValueError("Password must be 72 bytes or fewer")
+        return v
 
 
 class UserRead(BaseModel):
