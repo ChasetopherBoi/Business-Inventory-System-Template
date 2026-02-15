@@ -13,6 +13,10 @@
   --danger: #dc3545;
 }
 
+html {
+  scrollbar-gutter: auto;
+}
+
 body {
   margin: 0;
   background: var(--bg-page);
@@ -57,6 +61,23 @@ body {
   border-bottom: 3px solid transparent;
   transition: color .2s ease, border-color .2s ease;
 }
+.app-navbar .nav-link,
+.app-navbar .dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.2;
+}
+
+/* Remove Bootstrap's default dropdown offset */
+.app-navbar .dropdown-menu {
+  margin: 0 !important;
+  margin-top: 10px !important;
+}
+
+/* Nested submenu should sit flush with parent item */
+.app-navbar .dropend>.dropdown-menu {
+  margin: 0 !important;
+}
 
 /* hover underline */
 .app-navbar .nav-link:hover {
@@ -74,6 +95,15 @@ body {
   color: var(--accent);
 }
 
+@media (min-width: 992px) {
+
+  /* When hover-opening (no .show), keep Account menu right-aligned */
+  .app-navbar .dropdown:hover>.dropdown-menu.dropdown-menu-end {
+    left: auto !important;
+    right: 0 !important;
+  }
+}
+
 /* ------------------------------
    Dropdowns (NO gaps!)
 ------------------------------ */
@@ -89,6 +119,10 @@ body {
   border-top: 1px solid #3e4c59;
 }
 
+.dropdown-menu-show {
+  margin: 0;
+}
+
 .dropdown-item {
   color: var(--text-primary);
   padding: 8px 16px;
@@ -99,10 +133,6 @@ body {
   color: white;
 }
 
-/* Hover open */
-.dropdown:hover>.dropdown-menu {
-  display: block;
-}
 
 /* Nested submenu */
 .dropend {
@@ -110,13 +140,34 @@ body {
 }
 
 .dropend .dropdown-menu {
+  position: absolute;
+  top: 0;
   left: 100%;
-  top: -6px;
-  border-left: 1px solid #3e4c59;
+  margin-top: 0;
+  margin-left: 0;
 }
 
-.dropend:hover>.dropdown-menu {
-  display: block;
+.app-navbar .nav-item.dropdown>.dropdown-menu {
+  left: 0;
+  right: auto;
+}
+
+/* Force Account dropdown to ignore Popper's left/inset math */
+.app-navbar .nav-item.dropdown>.dropdown-menu.dropdown-menu-end {
+  left: auto !important;
+  right: 0 !important;
+  inset: auto 0 auto auto !important;
+  /* overrides inline inset */
+  transform: none !important;
+  /* cancels translate() Popper adds */
+}
+
+/* When Account menu is shown via CSS hover (no .show), still pin it to the right */
+@media (min-width: 992px) {
+  .app-navbar .nav-item.dropdown:hover>.dropdown-menu.dropdown-menu-end {
+    left: auto !important;
+    right: 0 !important;
+  }
 }
 
 /* ------------------------------
@@ -135,6 +186,15 @@ body {
 
 .btn-danger:hover {
   background: #b02a37;
+}
+
+#logout-button {
+  color: red;
+}
+
+#logout-button:hover {
+  background: var(--danger);
+  color: white;
 }
 
 /* ------------------------------
@@ -167,6 +227,7 @@ body {
   }
 
   .navbar .nav-link {
+    position: relative;
     margin-right: 0;
   }
 }
@@ -174,6 +235,10 @@ body {
 /* DESKTOP hover */
 @media (min-width: 992px) {
   .dropdown:hover>.dropdown-menu {
+    display: block;
+  }
+
+  .dropend:hover>.dropdown-menu {
     display: block;
   }
 }
@@ -195,4 +260,37 @@ body {
   color: white;
   background: rgba(77, 171, 247, .18);
   border-left: 3px solid var(--accent);
+  transform: none !important;
+}
+
+.cart-icon {
+  margin-top: -3px;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: inline-block;
+  margin-right: 5px;
+  filter: brightness(0) invert(1);
+}
+
+#cart-button:hover .cart-icon {
+  filter: brightness(0) invert(0);
+}
+
+/* Remove visible scrollbars on mobile to prevent layout gap */
+@media (max-width: 768px) {
+
+  html,
+  body {
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* Old Edge / IE */
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none;
+    /* Chrome / Safari / Android */
+  }
 }

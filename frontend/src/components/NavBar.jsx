@@ -1,6 +1,8 @@
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { CATEGORIES } from "../constants/categories.js";
 import { useCart } from "../context/CartContext.jsx";
+import cartIcon from "../assets/cart-icon.png";
+
 
 export default function NavBar({ me, onLogout }) {
   const nav = useNavigate();
@@ -10,33 +12,49 @@ export default function NavBar({ me, onLogout }) {
   const params = new URLSearchParams(location.search);
   const category = params.get("category") || "";
   const sub = params.get("sub") || "";
-  const onShop = location.pathname === "/shop";
 
-  // treat anything not admin as "shopper" for UI purposes
   const isAdmin = me?.role === "admin";
-  const showShopperLinks = !!me && !isAdmin;
   const isAuthed = !!me;
-  const showShopperCart = isAuthed && !isAdmin;
 
   function handleLogout() {
-    // Clear this user's cart data + UI state
     clear();
     onLogout?.();
   }
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark app-navbar">
+    <nav className="navbar navbar-expand-lg navbar-dark app-navbar sticky-top">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/">
+        <Link className="navbar-brand" to={isAdmin ? "/admin" : "/shop"}>
           Business Portal
         </Link>
 
-        <div className="collapse navbar-collapse show">
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#mainNavbar"
+          aria-controls="mainNavbar"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon" />
+        </button>
+
+        <div className="collapse navbar-collapse" id="mainNavbar">
           {/* LEFT */}
-          <ul className="navbar-nav me-auto align-items-center">
-            {isAuthed && (
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-2">
+            {/* SHOP / CATEGORIES (non-admin) */}
+            {isAuthed && !isAdmin && (
               <li className="nav-item dropdown">
-                <NavLink to="/shop" end className="nav-link dropdown-toggle">
+                <NavLink
+                  to="/shop"
+                  className={({ isActive }) =>
+                    `nav-link dropdown-toggle ${isActive ? "active" : ""}`
+                  }
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
                   Shop
                 </NavLink>
 
@@ -45,10 +63,11 @@ export default function NavBar({ me, onLogout }) {
                     c.subs ? (
                       <li className="dropend" key={c.value}>
                         <Link
-                          className={`dropdown-item ${
-                            onShop && category === c.value && !sub ? "active" : ""
-                          }`}
+                          className={`dropdown-item ${category === c.value ? "active" : ""}`}
                           to={`/shop?category=${c.value}`}
+                          role="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
                         >
                           {c.label}
                         </Link>
@@ -58,9 +77,9 @@ export default function NavBar({ me, onLogout }) {
                             <li key={s}>
                               <Link
                                 className={`dropdown-item ${
-                                  onShop && category === c.value && sub === s ? "active" : ""
+                                  category === c.value && sub === s ? "active" : ""
                                 }`}
-                                to={`/shop?category=${c.value}&sub=${s}`}
+                                to={`/shop?category=${c.value}&sub=${encodeURIComponent(s)}`}
                               >
                                 {s}
                               </Link>
@@ -71,9 +90,7 @@ export default function NavBar({ me, onLogout }) {
                     ) : (
                       <li key={c.value}>
                         <Link
-                          className={`dropdown-item ${
-                            onShop && category === c.value && !sub ? "active" : ""
-                          }`}
+                          className={`dropdown-item ${category === c.value ? "active" : ""}`}
                           to={`/shop?category=${c.value}`}
                         >
                           {c.label}
@@ -85,60 +102,78 @@ export default function NavBar({ me, onLogout }) {
               </li>
             )}
 
+            {/* ADMIN LINKS */}
             {isAdmin && (
               <>
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/admin" end>
+                  <NavLink to="/admin" end className="nav-link">
                     Inventory
                   </NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/admin/orders" end>
+                  <NavLink to="/admin/orders" className="nav-link">
                     Orders
                   </NavLink>
                 </li>
               </>
             )}
+
+            {/* SHOPPER LINKS */}
+            {isAuthed && !isAdmin && (
+              <li className="nav-item">
+                <NavLink to="/orders" className="nav-link">
+                  Orders
+                </NavLink>
+              </li>
+            )}
           </ul>
 
           {/* RIGHT */}
-          {showShopperLinks && (
-            <button
-              className="btn btn-outline-light btn-sm"
-              onClick={() => nav("/orders")}
-            >
-              Orders
-            </button>
-          )}
-          <div className="d-flex align-items-center gap-3">
-            {showShopperCart && (
-              <button
-                className="btn btn-outline-light btn-sm"
-                onClick={() => nav("/cart")}
-              >
-                Cart{count > 0 ? ` (${count})` : ""}
+          <div className="d-flex align-items-lg-center gap-2">
+            {isAuthed && !isAdmin && (
+              <button id="cart-button" className="btn btn-outline-light btn-sm" onClick={() => nav("/cart")}>
+                <img src={cartIcon} alt="" className="cart-icon" />
+                <span>
+                  Cart{count > 0 ? ` (${count})` : ""}
+                </span>
               </button>
-            )}
-
-            {isAuthed && (
-              <div className="text-end text-light small">
-                <div>{me.full_name}</div>
-                <div className="text-secondary">{me.role}</div>
-              </div>
             )}
 
             {isAuthed ? (
-              <button className="btn btn-danger btn-sm" onClick={handleLogout}>
-                Logout
-              </button>
+              <div className="dropdown">
+                <button
+                  className="btn btn-outline-light btn-sm dropdown-toggle"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  {me?.full_name || "Account"}
+                </button>
+                <ul className="dropdown-menu dropdown-menu-end">
+                  <li>
+                    <span className="dropdown-item-text">
+                      <div className="fw-semibold" style={{color: "white"}}>{me?.full_name}</div>
+                      <div className="small opacity-75" style={{color: "white"}}>{me?.role}</div>
+                    </span>
+                  </li>
+                  <li>
+                    <hr className="dropdown-divider" />
+                  </li>
+                  <li>
+                    <button id="logout-button" className="dropdown-item" onClick={handleLogout}>
+                      Logout
+                    </button>
+                  </li>
+                </ul>
+              </div>
             ) : (
               <>
-                <Link className="btn btn-outline-light btn-sm" to="/login">
+                <NavLink className="btn btn-outline-light btn-sm" to="/login">
                   Login
-                </Link>
-                <Link className="btn btn-primary btn-sm" to="/register">
+                </NavLink>
+                <NavLink className="btn btn-light btn-sm" to="/register">
                   Register
-                </Link>
+                </NavLink>
               </>
             )}
           </div>

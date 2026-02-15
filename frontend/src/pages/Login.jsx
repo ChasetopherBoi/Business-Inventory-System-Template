@@ -66,28 +66,38 @@ export default function LoginPage({ onLogin, error }) {
           </div>
         </form>
       </div>
-      <div className="container d-flex align-items-center gap-5 py-4 justify-content-center" style={{ maxWidth: "1000px", minWidth: "500px" }}>
-        <div class="row align-items-center">
-          <div class="col-md-6 text-md">
-            <h3 class="mb-1 text-nowrap" style={{ maxWidth: "50%" }}>Admin Login:</h3>
+      <div className="card mt-4 shadow-sm text-start" style={{ minWidth: 442, maxWidth: 442, margin: "auto" }}>
+        <div className="card-body">
+          <div className="d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <h5 className="card-title mb-0">Demo Logins</h5>
+            <span className="badge text-bg-secondary">Recruiter / Testing</span>
           </div>
-          <div class="col-md-6 text-md-end">
-            <h6 class="mb-1">admin@admin.com</h6>
-            <h6 class="mb-0">Passcode123</h6>
+
+          <div className="row g-4 mt-1">
+            <div className="col-md-6">
+              <div className="border rounded p-4 h-100 d-flex flex-column justify-content-center align-items-center">
+                <div className="fw-semibold">ADMIN</div>
+                <div className="small text-muted">admin@admin.com</div>
+                <div className="small text-muted">Passcode123</div>
+              </div>
+            </div>
+
+            <div className="col-md-6">
+              <div className="border rounded p-4 h-100 d-flex flex-column justify-content-center align-items-center">
+                <div className="fw-semibold">BUSINESS</div>
+                <div className="small text-muted">manager@store.com</div>
+                <div className="small text-muted">Boss4567</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-3">
+            <label className="form-label fw-semibold">Notes:</label>
+            <div></div>
           </div>
         </div>
       </div>
-            <div className="container d-flex align-items-center gap-5 py-4 justify-content-center" style={{ maxWidth: "1000px", minWidth: "500px" }}>
-        <div class="row align-items-center">
-          <div class="col-md-6 text-md">
-            <h3 class="mb-1 text-nowrap" style={{ maxWidth: "50%" }}>Business Login:</h3>
-          </div>
-          <div class="col-md-6 text-md-end">
-            <h6 class="mb-1">manager@store.com</h6>
-            <h6 class="mb-0">Boss4567</h6>
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 }
