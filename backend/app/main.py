@@ -12,6 +12,24 @@ app.include_router(api_v1_router, prefix="/api/v1")
 from app.db.session import engine
 from app.db.base import Base  # triggers model imports
 
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
+
+frontend_dist = Path(__file__).resolve().parents[2] / "frontend" / "dist"
+
+assets_dir = frontend_dist / "assets"
+if assets_dir.exists():
+    app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+
+@app.get("/{path:path}")
+def spa(path: str):
+    index = frontend_dist / "index.html"
+    if index.exists():
+        return FileResponse(index)
+    return {"detail": "Frontend not built"}
+
 
 @app.on_event("startup")
 def _create_tables():
