@@ -87,37 +87,6 @@ function Home() {
   );
 }
 
-function formatFastApiError(data) {
-  const detail = data?.detail;
-
-  const renameField = (field) => {
-    if (field === "full_name") return "Name";
-    if (field === "email") return "Email";
-    if (field === "password") return "Password";
-    if (field === "role") return "Role";
-    return field;
-  };
-
-  const cleanMsg = (msg) => {
-    if (msg === "Field required") return "is required";
-    return msg;
-  };
-
-  if (Array.isArray(detail)) {
-    return detail
-      .map((e) => {
-        const loc = Array.isArray(e.loc) ? e.loc : [];
-        const field = loc[loc.length - 1] || "field";
-        return `${renameField(field)} ${cleanMsg(e.msg)}`;
-      })
-      .join("\n");
-  }
-
-  if (typeof detail === "string") return detail;
-  if (typeof data?.message === "string") return data.message;
-
-  return "Registration failed";
-}
 
 async function apiRegister(name, email, password) {
   const res = await fetch("/api/v1/users/", {
