@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
 
+
 async function apiListItems() {
   const res = await fetch("/api/v1/items/");
   if (!res.ok) throw new Error("Failed to load inventory");
@@ -16,6 +17,7 @@ function useQuery() {
 function InventoryCard({ me, item, onAdd }) {
   const isAdmin = me?.role === "admin";
   const canAdd = !!me && !isAdmin;
+  
 
   return (
     <div className="card h-100 shadow-sm">
@@ -84,7 +86,7 @@ function InventoryCard({ me, item, onAdd }) {
 
 export default function ShopPage({ me }) {
   const { addItem } = useCart();
-
+  const [toasts, setToasts] = useState([]);
   const query = useQuery();
   const category = query.get("category") || "";
   const sub = query.get("sub") || "";
@@ -106,6 +108,18 @@ export default function ShopPage({ me }) {
       setLoading(false);
     }
   }
+
+  
+  function showToast(msg) {
+    const id = Date.now() + Math.random();
+
+    setToasts((prev) => [...prev, { id, msg }]);
+
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 1800);
+  }
+
 
   useEffect(() => {
     load();
@@ -130,6 +144,40 @@ export default function ShopPage({ me }) {
 
   return (
     <div className="container py-4">
+
+    <div
+      style={{
+        position: "fixed",
+        right: 16,
+        bottom: 16,
+        zIndex: 2000,
+      }}
+    >
+      {toasts.map((t, i) => (
+        <div
+          key={t.id}
+          className="toast show text-bg-dark border-0 mb-2"
+          role="status"
+          style={{
+            minWidth: 240,
+            animation: "fadeIn .15s ease-out",
+          }}
+        >
+          <div className="d-flex">
+            <div className="toast-body">{t.msg}</div>
+            <button
+              type="button"
+              className="btn-close btn-close-white me-2 m-auto"
+              onClick={() =>
+                setToasts((prev) => prev.filter((x) => x.id !== t.id))
+              }
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+
+
       <div className="d-flex flex-wrap gap-2 align-items-center justify-content-between">
         <div>
           <h1 className="h3 mb-0">Shop</h1>
@@ -172,17 +220,18 @@ export default function ShopPage({ me }) {
             <InventoryCard
               me={me}
               item={item}
-              onAdd={() =>
+              onAdd={() => {
                 addItem(
                   {
-                    // IMPORTANT: CartContext expects `id`
-                    id: item.item_number, // use item_number as the cart id
+                    id: item.item_number,
                     name: item.name,
                     price: Number(item.price) || 0,
                   },
                   1
-                )
-              }
+                );
+
+                showToast(`Added "${item.name}" to cart`);
+              }}
             />
           </div>
         ))}

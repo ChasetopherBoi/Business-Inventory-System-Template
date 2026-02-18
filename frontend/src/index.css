@@ -121,6 +121,13 @@ body {
   .app-container {
     padding: 0;
   }
+  #dropdown-arrow-right {
+    display: inline-block;
+  }
+
+  #dropdown-arrow-down {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {
@@ -288,17 +295,43 @@ body {
     position: relative;
     margin-right: 0;
   }
+  .main-category {
+    text-align: center;
+  }
+  .sub-category {
+    margin: auto;
+    text-align: center;
+    font-size: small;
+  }
+  #dropdown-arrow-right {
+    display: none;
+  }
+  #dropdown-arrow-down {
+    display: inline-block;
+  }
+}
+
+.sub-category {
+margin: auto;
+text-align: left;
+}
+.main-category {
+  text-align: left;
 }
 
 /* DESKTOP hover */
 @media (min-width: 992px) {
-  .dropdown:hover>.dropdown-menu {
-    display: block;
-  }
-
-  .dropend:hover>.dropdown-menu {
-    display: block;
-  }
+    .navbar-nav .nav-item.dropdown:hover>.dropdown-menu {
+      display: block;
+    }
+  
+    .navbar-nav .dropend:hover>.dropdown-menu {
+      display: block;
+    }
+  
+    .navbar-nav .dropdown-menu {
+      margin-top: 0 !important;
+    }
 }
 
 /* ACTIVE NAV TAB (persistent underline) */

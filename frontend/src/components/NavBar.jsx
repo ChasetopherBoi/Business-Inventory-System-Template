@@ -66,7 +66,7 @@ export default function NavBar({ me, onLogout }) {
                     <li className="dropend" key={c.value}>
                       <button
                         type="button"
-                        className={`dropdown-item dropdown-subtoggle ${category === c.value ? "active" : ""}`}
+                        className={`dropdown-item dropdown-subtoggle main-category ${category === c.value ? "active" : ""}`}
                         aria-expanded={openCat === c.value}
                         onClick={(e) => {
                           e.preventDefault();
@@ -74,13 +74,13 @@ export default function NavBar({ me, onLogout }) {
                           setOpenCat((prev) => (prev === c.value ? null : c.value));
                         }}
                       >
-                        {c.label}
+                        {c.label} <span id="dropdown-arrow-down">▾</span><span id="dropdown-arrow-right">→</span>
                       </button>
                       <ul className={`dropdown-menu dropdown-submenu ${openCat === c.value ? "show" : ""}`}>
                         {c.subs.map((s) => (
                           <li key={s}>
                             <Link
-                              className={`dropdown-item ${
+                              className={`dropdown-item sub-category ${
                                 category === c.value && sub === s ? "active" : ""
                               }`}
                               to={`/shop?category=${c.value}&sub=${encodeURIComponent(s)}`}
@@ -95,7 +95,7 @@ export default function NavBar({ me, onLogout }) {
                     ) : (
                       <li key={c.value}>
                         <Link
-                          className={`dropdown-item ${category === c.value ? "active" : ""}`}
+                          className={`dropdown-item main-category ${category === c.value ? "active" : ""}`}
                           to={`/shop?category=${c.value}`}
                         >
                           {c.label}
