@@ -4,6 +4,8 @@ A full-stack inventory management application built with **FastAPI (Python)** an
 
 **Live on Render : https://business-inventory-system-template.onrender.com/**
 
+**Important!** This project is made to showcase backend development skills, and is not meant to look visually perfect.
+
 ---
 
 ## 🚀 Tech Stack
