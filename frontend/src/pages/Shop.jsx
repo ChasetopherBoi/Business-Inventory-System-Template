@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 
 async function apiListItems() {
@@ -33,7 +34,7 @@ function InventoryCard({ me, item, onAdd }) {
       >
         {item.image_url ? (
           <img
-            src={`http://127.0.0.1:8000${item.image_url}`}
+            src={`${API_BASE}${item.image_url}`}
             alt={item.name}
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
@@ -153,7 +154,7 @@ export default function ShopPage({ me }) {
         zIndex: 2000,
       }}
     >
-      {toasts.map((t, i) => (
+      {toasts.map((t) => (
         <div
           key={t.id}
           className="toast show text-bg-dark border-0 mb-2"
