@@ -16,9 +16,12 @@
 html {
   scrollbar-gutter: auto;
 }
+#root {
+  width: 100%;
+}
 
 body {
-  width: 100vw;
+  width: 100%;
   margin: 0;
   background: var(--bg-page);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -30,6 +33,8 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px;
+  display: flex;
+  align-items: center;
 }
 
 /* ------------------------------
@@ -42,6 +47,7 @@ body {
   padding: 10px 20px;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
   z-index: 1000;
+  width: 100vw;
 }
 
 /* Brand */
@@ -96,14 +102,39 @@ body {
   color: var(--accent);
 }
 
-@media (min-width: 992px) {
+@media (min-width: 768px) {
 
   /* When hover-opening (no .show), keep Account menu right-aligned */
   .app-navbar .dropdown:hover>.dropdown-menu.dropdown-menu-end {
     left: auto !important;
     right: 0 !important;
   }
+  .login-info {
+    width: 420px;
+    margin: auto;
+    margin-bottom: 50px;
+  }
+  .login-container {
+    width: 442px;
+    margin: auto; 
+  }
+  .app-container {
+    padding: 0;
+  }
 }
+
+@media (max-width: 768px) {
+  .login-info {
+      margin: auto;
+      width: calc(100% - 20px);
+      max-width: 420px;
+      margin-bottom: 50px;
+    }
+    .app-container {
+      padding: 0;
+    }
+}
+
 
 /* ------------------------------
    Dropdowns (NO gaps!)
@@ -168,6 +199,32 @@ body {
   .app-navbar .nav-item.dropdown:hover>.dropdown-menu.dropdown-menu-end {
     left: auto !important;
     right: 0 !important;
+  }
+}
+
+@media (max-width: 991.98px) {
+
+  /* Make nested submenu behave like an inline list (not a flyout) */
+  .dropdown-menu .dropdown-submenu {
+    position: static !important;
+    float: none;
+    display: none;
+    margin: 0;
+    padding-left: 0;
+    box-shadow: none;
+    border-top: 0;
+  }
+
+  .dropdown-menu .dropdown-submenu.show {
+    display: block;
+  }
+
+  /* Make the parent look clickable like a normal dropdown item */
+  .dropdown-subtoggle {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: 0;
   }
 }
 
@@ -293,5 +350,9 @@ body {
   body::-webkit-scrollbar {
     display: none;
     /* Chrome / Safari / Android */
+  }
+  .login-container {
+    width: calc(100% - 25px);
+    margin: auto;
   }
 }

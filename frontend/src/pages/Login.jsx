@@ -17,7 +17,7 @@ export default function LoginPage({ onLogin, error }) {
         flexDirection: "column",
       }}
     >
-      <div className="container py-4">
+      <div className="container py-4 login-container">
         <div
           className="h1 mb-3 fw-bold"
           style={{ paddingBottom: "75px", textAlign: "center" }}
@@ -66,7 +66,7 @@ export default function LoginPage({ onLogin, error }) {
           </div>
         </form>
       </div>
-      <div className="card mt-4 shadow-sm text-start" style={{ minWidth: 442, maxWidth: 442, margin: "auto" }}>
+      <div className="card mt-4 shadow-sm text-start login-info">
         <div className="card-body">
           <div className="d-flex flex-wrap align-items-center justify-content-between gap-2">
             <h5 className="card-title mb-0">Demo Logins</h5>
@@ -93,7 +93,13 @@ export default function LoginPage({ onLogin, error }) {
 
           <div className="mt-3">
             <label className="form-label fw-semibold">Notes:</label>
-            <div></div>
+            <div className="fs-8 fw-normal">
+              <span className="fs-6 fw-semibold">Admin:</span> Has access to add/edit inventory items. Can update order status as well as promote other users to 'admin' role. 
+              <br /> This role simulates a business owner or manager who would be responsible for maintaining the inventory and managing orders.
+              <br></br>
+              <br />
+              <span className="fs-6 fw-semibold">Business:</span> Can view inventory and place orders. This role simulates a business that would be purchasing inventory from the suppliers.
+            </div>
           </div>
         </div>
       </div>

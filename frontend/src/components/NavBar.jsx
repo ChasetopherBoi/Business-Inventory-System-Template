@@ -2,12 +2,14 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { CATEGORIES } from "../constants/categories.js";
 import { useCart } from "../context/CartContext.jsx";
 import cartIcon from "../assets/cart-icon.png";
+import { useState } from "react";
 
 
 export default function NavBar({ me, onLogout }) {
   const nav = useNavigate();
   const { count, clear } = useCart();
   const location = useLocation();
+  const [openCat, setOpenCat] = useState(null);
 
   const params = new URLSearchParams(location.search);
   const category = params.get("category") || "";
@@ -61,32 +63,35 @@ export default function NavBar({ me, onLogout }) {
                 <ul className="dropdown-menu">
                   {CATEGORIES.map((c) =>
                     c.subs ? (
-                      <li className="dropend" key={c.value}>
-                        <Link
-                          className={`dropdown-item ${category === c.value ? "active" : ""}`}
-                          to={`/shop?category=${c.value}`}
-                          role="button"
-                          data-bs-toggle="dropdown"
-                          aria-expanded="false"
-                        >
-                          {c.label}
-                        </Link>
-
-                        <ul className="dropdown-menu">
-                          {c.subs.map((s) => (
-                            <li key={s}>
-                              <Link
-                                className={`dropdown-item ${
-                                  category === c.value && sub === s ? "active" : ""
-                                }`}
-                                to={`/shop?category=${c.value}&sub=${encodeURIComponent(s)}`}
-                              >
-                                {s}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </li>
+                    <li className="dropend" key={c.value}>
+                      <button
+                        type="button"
+                        className={`dropdown-item dropdown-subtoggle ${category === c.value ? "active" : ""}`}
+                        aria-expanded={openCat === c.value}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setOpenCat((prev) => (prev === c.value ? null : c.value));
+                        }}
+                      >
+                        {c.label}
+                      </button>
+                      <ul className={`dropdown-menu dropdown-submenu ${openCat === c.value ? "show" : ""}`}>
+                        {c.subs.map((s) => (
+                          <li key={s}>
+                            <Link
+                              className={`dropdown-item ${
+                                category === c.value && sub === s ? "active" : ""
+                              }`}
+                              to={`/shop?category=${c.value}&sub=${encodeURIComponent(s)}`}
+                              onClick={() => setOpenCat(null)}
+                            >
+                              {s}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
                     ) : (
                       <li key={c.value}>
                         <Link
