@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 
 class UserCreate(BaseModel):
@@ -6,6 +6,10 @@ class UserCreate(BaseModel):
     email: str
     password: str
     role: str = "shop"
+
+    @field_validator("email")
+    def normalize_email(cls, v: str) -> str:
+        return v.strip().lower()
 
     @classmethod
     def password_max_len(cls, v: str) -> str:

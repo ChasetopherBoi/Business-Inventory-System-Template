@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 
 
 async function apiListItems() {
@@ -34,9 +34,9 @@ function InventoryCard({ me, item, onAdd }) {
       >
         {item.image_url ? (
           <img
-            src={`${API_BASE}${item.image_url}`}
+            src={item.image_url ? `${API_BASE}${item.image_url}` : ""}
             alt={item.name}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            className="card-img"
           />
         ) : (
           <div className="text-muted">No image</div>
