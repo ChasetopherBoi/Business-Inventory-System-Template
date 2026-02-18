@@ -154,7 +154,7 @@ export default function NavBar({ me, onLogout }) {
                 >
                   {me?.full_name || "Account"}
                 </button>
-                <ul className="dropdown-menu dropdown-menu-end">
+                <ul className="dropdown-menu dropdown-menu-end" id="account-dropdown">
                   <li>
                     <span className="dropdown-item-text">
                       <div className="fw-semibold" style={{color: "white"}}>{me?.full_name}</div>

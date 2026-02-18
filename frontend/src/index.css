@@ -22,6 +22,7 @@ html {
 
 body {
   width: 100%;
+  height: auto;
   margin: 0;
   background: var(--bg-page);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -103,12 +104,6 @@ body {
 }
 
 @media (min-width: 768px) {
-
-  /* When hover-opening (no .show), keep Account menu right-aligned */
-  .app-navbar .dropdown:hover>.dropdown-menu.dropdown-menu-end {
-    left: auto !important;
-    right: 0 !important;
-  }
   .login-info {
     width: 420px;
     margin: auto;
@@ -193,20 +188,10 @@ body {
 
 /* Force Account dropdown to ignore Popper's left/inset math */
 .app-navbar .nav-item.dropdown>.dropdown-menu.dropdown-menu-end {
-  left: auto !important;
-  right: 0 !important;
   inset: auto 0 auto auto !important;
   /* overrides inline inset */
   transform: none !important;
   /* cancels translate() Popper adds */
-}
-
-/* When Account menu is shown via CSS hover (no .show), still pin it to the right */
-@media (min-width: 992px) {
-  .app-navbar .nav-item.dropdown:hover>.dropdown-menu.dropdown-menu-end {
-    left: auto !important;
-    right: 0 !important;
-  }
 }
 
 @media (max-width: 991.98px) {
@@ -293,7 +278,6 @@ body {
 
   .navbar .nav-link {
     position: relative;
-    margin-right: 0;
   }
   .main-category {
     text-align: center;
@@ -321,16 +305,24 @@ text-align: left;
 
 /* DESKTOP hover */
 @media (min-width: 992px) {
-    .navbar-nav .nav-item.dropdown:hover>.dropdown-menu {
-      display: block;
-    }
-  
-    .navbar-nav .dropend:hover>.dropdown-menu {
-      display: block;
-    }
-  
-    .navbar-nav .dropdown-menu {
-      margin-top: 0 !important;
+  .navbar-nav .nav-item.dropdown:hover>.dropdown-menu {
+    display: block;
+  }
+
+  .navbar-nav .dropend:hover>.dropdown-menu {
+    display: block;
+  }
+
+  .navbar-nav .dropdown-menu {
+    margin-top: 0 !important;
+  }
+}
+
+@media (max-width: 992px) {
+  #account-dropdown {
+      margin: 0;
+      left: 0;
+      right: auto;
     }
 }
 
