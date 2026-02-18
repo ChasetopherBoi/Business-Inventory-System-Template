@@ -1,6 +1,7 @@
 # Business Inventory System Template
 
 A full-stack inventory management application built with **FastAPI (Python)** and **React (Vite)** designed to demonstrate modern web architecture, REST API design, and role-based business workflows.
+
 **Live on Render : https://business-inventory-system-template.onrender.com/**
 
 ---
